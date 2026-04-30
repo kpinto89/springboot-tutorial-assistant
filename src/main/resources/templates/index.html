@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Spring Boot AI Tutorial Assistant</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav>
+  <a class="brand" href="/">🍃 Tutorial Assistant</a>
+  <a href="/ui/ask">Ask</a>
+  <a href="/ui/roadmap">Roadmap</a>
+  <a href="/ui/review">Code Review</a>
+</nav>
+
+<div class="container">
+  <div class="hero">
+    <h1>Spring Boot AI Tutorial Assistant</h1>
+    <p>Powered by GitHub Models &mdash; ask questions, generate roadmaps, and review your code.</p>
+  </div>
+
+  <div class="cards">
+    <a class="card" href="/ui/ask">
+      <div class="icon">💬</div>
+      <h2>Ask a Question</h2>
+      <p>Get detailed answers about Spring Boot, Java, and related frameworks at your level.</p>
+    </a>
+    <a class="card" href="/ui/roadmap">
+      <div class="icon">🗺️</div>
+      <h2>Learning Roadmap</h2>
+      <p>Generate a structured learning path for any topic with prerequisites and projects.</p>
+    </a>
+    <a class="card" href="/ui/review">
+      <div class="icon">🔍</div>
+      <h2>Code Review</h2>
+      <p>Paste your code and get AI-powered feedback on best practices and improvements.</p>
+    </a>
+  </div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Learning Roadmap – Tutorial Assistant</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav>
+  <a class="brand" href="/">🍃 Tutorial Assistant</a>
+  <a href="/ui/ask">Ask</a>
+  <a href="/ui/roadmap">Roadmap</a>
+  <a href="/ui/review">Code Review</a>
+</nav>
+
+<div class="container">
+
+  <div class="panel">
+    <h2>🗺️ Generate Learning Roadmap</h2>
+    <form th:action="@{/ui/roadmap/generate}" method="get">
+      <div class="row">
+        <div>
+          <label for="topic">Topic</label>
+          <input type="text" id="topic" name="topic" placeholder="e.g. Spring Security"
+                 th:value="${topic}" required/>
+        </div>
+        <div>
+          <label for="level">Level</label>
+          <select id="level" name="level">
+            <option value="beginner"     th:selected="${level == 'beginner'}">Beginner</option>
+            <option value="intermediate" th:selected="${level == 'intermediate'}" selected>Intermediate</option>
+            <option value="advanced"     th:selected="${level == 'advanced'}">Advanced</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn">Generate →</button>
+    </form>
+  </div>
+
+  <div class="response-box" th:if="${response != null}">
+    <span class="badge" th:text="'Topic: ' + ${topic} + ' · ' + ${level}">Topic</span>
+    <h3>Roadmap</h3>
+    <div class="response-content" th:text="${response.answer}"></div>
+  </div>
+
+</div>
+</body>
+</html>
+

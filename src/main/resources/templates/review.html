@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Code Review – Tutorial Assistant</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav>
+  <a class="brand" href="/">🍃 Tutorial Assistant</a>
+  <a href="/ui/ask">Ask</a>
+  <a href="/ui/roadmap">Roadmap</a>
+  <a href="/ui/review">Code Review</a>
+</nav>
+
+<div class="container">
+
+  <div class="panel">
+    <h2>🔍 Code Review</h2>
+    <form th:action="@{/ui/review}" method="post">
+      <label for="language">Language</label>
+      <select id="language" name="language">
+        <option value="Java"        th:selected="${language == 'Java'}"        selected>Java</option>
+        <option value="Kotlin"      th:selected="${language == 'Kotlin'}">Kotlin</option>
+        <option value="Python"      th:selected="${language == 'Python'}">Python</option>
+        <option value="JavaScript"  th:selected="${language == 'JavaScript'}">JavaScript</option>
+        <option value="TypeScript"  th:selected="${language == 'TypeScript'}">TypeScript</option>
+      </select>
+
+      <label for="code">Paste Your Code</label>
+      <textarea id="code" name="code" placeholder="public class MyService { ... }" required
+                th:text="${code}"></textarea>
+
+      <button type="submit" class="btn">Review →</button>
+    </form>
+  </div>
+
+  <div class="response-box" th:if="${response != null}">
+    <span class="badge" th:text="'Language: ' + ${language}">Language</span>
+    <h3>Review Feedback</h3>
+    <div class="response-content" th:text="${response.answer}"></div>
+  </div>
+
+</div>
+</body>
+</html>
+

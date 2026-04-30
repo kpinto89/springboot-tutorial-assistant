@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Ask a Question – Tutorial Assistant</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<nav>
+  <a class="brand" href="/">🍃 Tutorial Assistant</a>
+  <a href="/ui/ask">Ask</a>
+  <a href="/ui/roadmap">Roadmap</a>
+  <a href="/ui/review">Code Review</a>
+</nav>
+
+<div class="container">
+
+  <!-- Form -->
+  <div class="panel">
+    <h2>💬 Ask a Question</h2>
+    <form th:action="@{/ui/ask}" method="post">
+      <label for="question">Your Question</label>
+      <input type="text" id="question" name="question" placeholder="e.g. How does dependency injection work?"
+             th:value="${request?.question}" required/>
+
+      <div class="row">
+        <div>
+          <label for="context">Context / Framework</label>
+          <input type="text" id="context" name="context" placeholder="Spring Boot"
+                 th:value="${request?.context}"/>
+        </div>
+        <div>
+          <label for="level">Skill Level</label>
+          <select id="level" name="level">
+            <option value="beginner"     th:selected="${request?.level == 'beginner'}">Beginner</option>
+            <option value="intermediate" th:selected="${request?.level == 'intermediate'}" selected>Intermediate</option>
+            <option value="advanced"     th:selected="${request?.level == 'advanced'}">Advanced</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="btn">Ask →</button>
+    </form>
+  </div>
+
+  <!-- Synchronous Response -->
+  <div class="response-box" th:if="${response != null}">
+    <span class="badge" th:text="'Model: ' + ${response.model}">Model</span>
+    <h3>Answer</h3>
+    <div class="response-content" th:text="${response.answer}"></div>
+  </div>
+
+  <!-- Live Stream Section -->
+  <div class="panel" style="margin-top:2rem;">
+    <h2>⚡ Live Stream Answer</h2>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:1rem;">
+      Fill the form above then click Stream to see the answer token-by-token.
+    </p>
+    <button class="btn" id="streamBtn" onclick="startStream()">Stream →</button>
+    <div style="margin-top:1rem;" id="streamWrapper" hidden>
+      <div id="stream-output"></div>
+    </div>
+  </div>
+
+</div>
+
+<script th:inline="javascript">
+  function startStream() {
+    const question = document.getElementById('question').value;
+    const context  = document.getElementById('context').value;
+    const level    = document.getElementById('level').value;
+
+    if (!question) { alert('Please enter a question first.'); return; }
+
+    const output  = document.getElementById('stream-output');
+    const wrapper = document.getElementById('streamWrapper');
+    const btn     = document.getElementById('streamBtn');
+
+    output.textContent = '';
+    wrapper.hidden = false;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Streaming…';
+
+    fetch('/api/tutorial/stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, context, level })
+    }).then(res => {
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      function read() {
+        reader.read().then(({ done, value }) => {
+          if (done) { btn.disabled = false; btn.textContent = 'Stream →'; return; }
+          const chunk = decoder.decode(value);
+          // SSE format: lines starting with "data:"
+          chunk.split('\n').forEach(line => {
+            if (line.startsWith('data:')) output.textContent += line.slice(5);
+          });
+          read();
+        });
+      }
+      read();
+    }).catch(err => {
+      output.textContent = 'Error: ' + err.message;
+      btn.disabled = false;
+      btn.textContent = 'Stream →';
+    });
+  }
+</script>
+</body>
+</html>
+
